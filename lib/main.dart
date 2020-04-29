@@ -17,8 +17,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool isChecked = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,24 +24,36 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text("Stateful Widget"),
       ),
       body: Center(
-        child: Column(
-          children: <Widget>[
-            Checkbox(
-                value: isChecked,
-                onChanged: (value) {
-                  setState(() {
-                    isChecked = value;
-                  });
-                }),
-            Switch(
-                value: isChecked,
-                onChanged: (value) {
-                  setState(() {
-                    isChecked = value;
-                  });
-                })
-          ],
-        ),
+        child: IconButton(
+            icon: Icon(Icons.map),
+            onPressed: () {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("제목"),
+                    content: SingleChildScrollView(
+                      child: ListBody(
+                        children: <Widget>[Text("Alert"), Text("Alert")],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      FlatButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text("OK")),
+                      FlatButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text("Cancel"))
+                    ],
+                  );
+                },
+              );
+            }),
       ),
     );
   }
