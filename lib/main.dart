@@ -19,8 +19,9 @@ class MyHomePage extends StatelessWidget {
           title: Text("Center"),
         ),
         body: Center(
-          child: Image(
-            image: AssetImage("assets/sample.jpg"),
+          child: CircleAvatar(
+            backgroundImage: NetworkImage(
+                'https://avatars0.githubusercontent.com/u/19545278?s=400&u=d40fbdd0fed293312b9eaad3a360b0dc9f561e9e&v=4'),
           ),
         ));
   }
