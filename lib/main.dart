@@ -17,44 +17,51 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  DateTime _selectedDate;
+  String _selectedTime;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Stateful Widget"),
-      ),
-      body: Center(
-        child: IconButton(
-            icon: Icon(Icons.map),
-            onPressed: () {
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text("제목"),
-                    content: SingleChildScrollView(
-                      child: ListBody(
-                        children: <Widget>[Text("Alert"), Text("Alert")],
-                      ),
-                    ),
-                    actions: <Widget>[
-                      FlatButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text("OK")),
-                      FlatButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text("Cancel"))
-                    ],
-                  );
-                },
-              );
-            }),
-      ),
-    );
+        appBar: AppBar(
+          title: Text("Stateful Widget"),
+        ),
+        body: Center(
+          child: Column(
+            children: <Widget>[
+              RaisedButton(
+                  child: Text("Date Picker"),
+                  onPressed: () {
+                    Future<DateTime> selectedDate = showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2017),
+                        lastDate: DateTime(2030),
+                        builder: (BuildContext context, Widget child) {
+                          return Theme(data: ThemeData.dark(), child: child);
+                        });
+
+                    selectedDate.then((dataTime) {
+                      setState(() {
+                        _selectedDate = dataTime;
+                      });
+                    });
+                  }),
+              RaisedButton(
+                  child: Text("Time Picker"),
+                  onPressed: () {
+                    Future<TimeOfDay> selectedTime = showTimePicker(
+                        context: context, initialTime: TimeOfDay.now());
+
+                    selectedTime.then((time) {
+                      setState(() {
+                        _selectedTime = time.toString();
+                      });
+                    });
+                  }),
+              Text("$_selectedDate"),
+              Text("$_selectedTime"),
+            ],
+          ),
+        ));
   }
 }
