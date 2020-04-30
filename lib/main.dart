@@ -7,61 +7,55 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return MaterialApp(
-        title: "Flutter Demo", theme: ThemeData.light(), home: MyHomePage());
+        title: "Flutter Demo", theme: ThemeData.dark(), home: HeroPage());
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  DateTime _selectedDate;
-  String _selectedTime;
+class HeroPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Stateful Widget"),
-        ),
-        body: Center(
-          child: Column(
-            children: <Widget>[
-              RaisedButton(
-                  child: Text("Date Picker"),
-                  onPressed: () {
-                    Future<DateTime> selectedDate = showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2017),
-                        lastDate: DateTime(2030),
-                        builder: (BuildContext context, Widget child) {
-                          return Theme(data: ThemeData.dark(), child: child);
-                        });
-
-                    selectedDate.then((dataTime) {
-                      setState(() {
-                        _selectedDate = dataTime;
-                      });
-                    });
-                  }),
-              RaisedButton(
-                  child: Text("Time Picker"),
-                  onPressed: () {
-                    Future<TimeOfDay> selectedTime = showTimePicker(
-                        context: context, initialTime: TimeOfDay.now());
-
-                    selectedTime.then((time) {
-                      setState(() {
-                        _selectedTime = time.toString();
-                      });
-                    });
-                  }),
-              Text("$_selectedDate"),
-              Text("$_selectedTime"),
-            ],
+      appBar: AppBar(
+        title: Text("ddds"),
+      ),
+      body: Center(
+        child: GestureDetector(
+          child: Hero(
+            tag: "image",
+            child: Image.asset(
+              "assets/sample.jpg",
+              width: 100,
+              height: 100,
+            ),
           ),
-        ));
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => HeroDetailPage()));
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class HeroDetailPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: GestureDetector(
+          child: Hero(
+            tag: "image",
+            child: Image.asset(
+              "assets/sample.jpg",
+            ),
+          ),
+          onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => HeroPage()));
+          },
+        ),
+      ),
+    );
   }
 }
