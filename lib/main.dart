@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -7,55 +8,80 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return MaterialApp(
-        title: "Flutter Demo", theme: ThemeData.dark(), home: HeroPage());
+        title: "Flutter Demo", theme: ThemeData.light(), home: MyHomePage());
   }
 }
 
-class HeroPage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  bool _isOn = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("ddds"),
+      appBar: CupertinoNavigationBar(
+        middle: Text("Cupertino Design"),
       ),
       body: Center(
-        child: GestureDetector(
-          child: Hero(
-            tag: "image",
-            child: Image.asset(
-              "assets/sample.jpg",
-              width: 100,
-              height: 100,
+        child: Column(
+          children: <Widget>[
+            SizedBox.fromSize(
+              size: Size(10, 100),
             ),
-          ),
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => HeroDetailPage()));
-          },
+            CupertinoSwitch(
+                value: _isOn,
+                onChanged: (bool value) {
+                  setState(() {
+                    _isOn = value;
+                  });
+                }),
+            SizedBox.fromSize(
+              size: Size(10, 10),
+            ),
+            CupertinoButton(
+                child: Text("Cupertino AlertDialog"),
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.black,
+                onPressed: () {
+                  _showCupertinoDialog();
+                }),
+            SizedBox.fromSize(
+              size: Size(10, 10),
+            ),
+            CupertinoButton(
+              child: Text("Cupertino Picker"),
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.black,
+              onPressed: () {
+                _showCupertinoPicker();
+              },
+            )
+          ],
         ),
       ),
     );
   }
-}
 
-class HeroDetailPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: GestureDetector(
-          child: Hero(
-            tag: "image",
-            child: Image.asset(
-              "assets/sample.jpg",
-            ),
-          ),
-          onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => HeroPage()));
-          },
-        ),
-      ),
-    );
+  _showCupertinoDialog() {
+    showDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+              title: Text("제목"),
+              content: Text("내용"),
+              actions: <Widget>[
+                CupertinoDialogAction(child: Text("Cancel")),
+                CupertinoDialogAction(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            ));
   }
+
+  _showCupertinoPicker() {}
 }
