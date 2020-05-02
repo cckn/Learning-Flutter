@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapp/datas/Person.dart';
-import 'package:flutterapp/pages/secondPage.dart';
 
-class FirstHomePage extends StatelessWidget {
+class FirstHomePage extends StatefulWidget {
+  @override
+  _FirstHomePageState createState() => _FirstHomePageState();
+}
+
+class _FirstHomePageState extends State<FirstHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +16,6 @@ class FirstHomePage extends StatelessWidget {
           child: RaisedButton(
             child: Text("Go to NextPage"),
             onPressed: () async {
-              Person data = Person("박대성", 20);
               final result = await Navigator.pushNamed(context, "/second");
               print(result);
             },
