@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapp/pages/Home.dart';
-import 'package:flutterapp/pages/Info.dart';
-import 'package:flutterapp/pages/Sevice.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,58 +9,51 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: "Flutter Demo",
         theme: ThemeData(primaryColor: Colors.white),
-        home: MyHome());
+        home: Scaffold(
+          appBar: AppBar(
+            title: Text("폼 검증 데모"),
+          ),
+          body: MyCustomForm(),
+        ));
   }
 }
 
-class MyHome extends StatefulWidget {
+class MyCustomForm extends StatefulWidget {
   @override
-  _MyHomeState createState() => _MyHomeState();
+  _MyCustomFormState createState() => _MyCustomFormState();
 }
 
-class _MyHomeState extends State<MyHome> {
-  int _index = 0;
-  var pages = [Home(), Service(), Info()];
+class _MyCustomFormState extends State<MyCustomForm> {
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Complex UI",
-          style: TextStyle(color: Colors.black),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.add), color: Colors.black, onPressed: () {})
-        ],
-      ),
-      body: pages[_index],
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black26,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text("Home"),
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          TextFormField(
+            validator: (value) {
+              if (value.isEmpty) {
+                return "Type Text Here";
+              }
+              return null;
+            },
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
-            title: Text("Service"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            title: Text("Info"),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: RaisedButton(
+              onPressed: () {
+                if (_formKey.currentState.validate()) {
+                  Scaffold.of(context)
+                      .showSnackBar(SnackBar(content: Text("Validation Done")));
+                }
+              },
+              child: Text("Validation"),
+            ),
           )
         ],
-        currentIndex: _index,
-        onTap: (index) {
-          setState(() {
-            _index = index;
-          });
-        },
       ),
     );
   }
