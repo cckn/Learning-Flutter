@@ -1,33 +1,39 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 void main() => runApp(MyApp());
+
+class Todo {
+  bool isDone = false;
+  String title;
+
+  Todo(this.title);
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return MaterialApp(
-        title: "Flutter Demo", theme: ThemeData.dark(), home: StopWatchPage());
+      title: "Flutter Demo",
+      theme: ThemeData.dark(),
+      home: TodoListPage(),
+    );
   }
 }
 
-class StopWatchPage extends StatefulWidget {
+class TodoListPage extends StatefulWidget {
   @override
-  _StopWatchPageState createState() => _StopWatchPageState();
+  _TodoListPageState createState() => _TodoListPageState();
 }
 
-class _StopWatchPageState extends State<StopWatchPage> {
-  Timer _timer;
+class _TodoListPageState extends State<TodoListPage> {
+  final _items = <Todo>[];
 
-  num _time = 0;
-  bool _isRunning = false;
-
-  List<String> _lapTimes = [];
+  var _todoController = TextEditingController();
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _todoController.dispose();
     super.dispose();
   }
 
@@ -35,120 +41,73 @@ class _StopWatchPageState extends State<StopWatchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("StopWatch"),
+        centerTitle: true,
+        title: Text("Remain ToDos"),
       ),
-      body: _buildBody(),
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          height: 50,
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            _clickButton();
-          });
-        },
-        child: _isRunning ? (Icon(Icons.pause)) : (Icon(Icons.play_arrow)),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    );
-  }
-
-  Widget _buildBody() {
-    var sec = _time ~/ 100;
-    var hundredth = "${_time % 100}".padLeft(2, "0");
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 30),
-        child: Stack(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
           children: <Widget>[
-            Column(
+            Row(
               children: <Widget>[
-                Row(
-                  // Show Time Field
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Text(
-                      "$sec",
-                      style: TextStyle(fontSize: 50),
-                    ),
-                    Text("$hundredth")
-                  ],
-                ),
-                Container(
-                  // Show LabTime Field
-                  width: 100,
-                  height: 200,
-                  child: ListView(
-                    children: _lapTimes.map((time) => Text(time)).toList(),
-                  ),
+                Expanded(
+                    child: TextField(
+                  controller: _todoController,
+                )),
+                RaisedButton(
+                  child: Text("Add"),
+                  onPressed: () => _addTodo(Todo(_todoController.text.trim())),
                 )
               ],
             ),
-            Positioned(
-              // Reset Button
-              left: 10,
-              bottom: 10,
-              child: FloatingActionButton(
-                backgroundColor: Colors.deepOrange,
-                onPressed: _reset,
-                child: Icon(Icons.rotate_left),
-              ),
-            ),
-            Positioned(
-              // LapTime Button
-              right: 10,
-              bottom: 10,
-              child: RaisedButton(
-                onPressed: () {
-                  setState(() {
-                    _recordLapTime("$sec.$hundredth");
-                  });
-                },
-                child: Text("랩타임"),
-              ),
-            )
+            Expanded(
+                child: ListView(
+              children: _items.map((todo) => _buildItemWidget(todo)).toList(),
+            ))
           ],
         ),
       ),
     );
   }
 
-  void _clickButton() {
-    _isRunning = !_isRunning;
-
-    if (_isRunning) {
-      _start();
-    } else {
-      _pause();
-    }
+  Widget _buildItemWidget(Todo todo) {
+    return ListTile(
+        onTap: () {
+          //Todo: Todo 누를 시 isDone = !isDone
+          _toggleTodo(todo);
+        },
+        title: Text(todo.title,
+            style: todo.isDone
+                ? TextStyle(
+                    decoration: TextDecoration.lineThrough,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.white54)
+                : null),
+        trailing: IconButton(
+          icon: Icon(Icons.delete_forever),
+          onPressed: () {
+            // TODO: RemoveBtn 누를 시 Todo 삭제
+            _removeTodo(todo);
+          },
+        ));
   }
 
-  void _start() {
-    _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
-      setState(() {
-        _time++;
-      });
-    });
-  }
-
-  void _pause() {
-    _timer?.cancel();
-  }
-
-  void _reset() {
+  void _addTodo(Todo todo) {
     setState(() {
-      _isRunning = false;
-      _timer?.cancel();
-      _lapTimes.clear();
-      _time = 0;
+      _items.add(todo);
+      _todoController.text = ""; // Reset to-do input form
     });
   }
 
-  void _recordLapTime(String time) {
-    _lapTimes.add("${_lapTimes.length + 1}등 $time");
+  void _removeTodo(Todo todo) {
+    setState(() {
+      _items.remove(todo);
+    });
+  }
+
+  void _toggleTodo(Todo todo) {
+    setState(() {
+      todo.isDone = !todo.isDone;
+    });
   }
 }
